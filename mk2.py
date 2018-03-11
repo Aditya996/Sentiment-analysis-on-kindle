@@ -10,18 +10,25 @@ from sklearn.model_selection import train_test_split
 from keras.utils.np_utils import to_categorical
 import re
 import pickle as pkl
+
 with open('sent.pkl','rb') as handle:
     dataset=pkl.load(handle)
+
 review_text=dataset[['overall','summary']]
 max(len(w) for w in review_text['summary'].astype(np.str))
+
 max(review_text['summary'],key=len)
+
 review_text['summary']=review_text['summary'].apply(lambda x:x.lower())
 review_text['summary']=review_text['summary'].apply((lambda x: re.sub('[^a-zA-z\s]','',x)))
+
 for i in range(5):
     print('rating=',i+1,'\t',review_text[review_text['overall']==i+1].size)
+
 max_fatures = 2000
 tokenizer = Tokenizer(num_words=max_fatures, split=' ')
 tokenizer.fit_on_texts(review_text['summary'].values)
+
 X = tokenizer.texts_to_sequences(review_text['summary'].values)
 X = pad_sequences(X)
 X_min=pad_sequences(X[:10000])
